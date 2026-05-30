@@ -1,0 +1,506 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#f0f0ee;padding:1.5rem 1rem 3rem;min-height:100vh;transition:background 0.2s;}
+body.dark{background:#0e0e0c;}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:580px;margin:0 auto 1.25rem;}
+.hero-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#888;}
+body.dark .hero-label{color:#555;}
+
+.dark-toggle{background:#fff;border:1.5px solid #ccc;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:500;color:#333;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+.dark-toggle:hover{background:#f5f5f3;border-color:#999;}
+body.dark .dark-toggle{background:#2a2a28;border-color:#444;color:#e0e0de;box-shadow:0 1px 3px rgba(0,0,0,0.4);}
+body.dark .dark-toggle:hover{background:#333;}
+
+h1{font-family:'DM Serif Display',serif;font-size:34px;font-weight:400;text-align:center;color:#111;margin-bottom:0.25rem;}
+body.dark h1{color:#f0f0ee;}
+.tagline{text-align:center;font-size:14px;color:#666;margin-bottom:1.5rem;}
+body.dark .tagline{color:#888;}
+
+.card{max-width:580px;margin:0 auto;background:#fff;border:1.5px solid #d8d8d6;border-radius:14px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:background 0.2s,border-color 0.2s;}
+body.dark .card{background:#1a1a18;border-color:#333;box-shadow:0 2px 12px rgba(0,0,0,0.4);}
+
+/* Mode tabs */
+.tabs{display:flex;gap:0;margin-bottom:1.25rem;border:1.5px solid #d0d0ce;border-radius:9px;overflow:hidden;}
+body.dark .tabs{border-color:#333;}
+.tab{flex:1;height:40px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:#f7f7f5;color:#888;font-family:'DM Sans',sans-serif;transition:all 0.15s;border-right:1.5px solid #d0d0ce;}
+.tab:last-child{border-right:none;}
+.tab:hover{background:#ececea;color:#333;}
+.tab.active{background:#111;color:#fff;}
+body.dark .tab{background:#222;color:#666;border-right-color:#333;}
+body.dark .tab:hover{background:#2a2a28;color:#ccc;}
+body.dark .tab.active{background:#f0f0ee;color:#111;}
+
+/* Inputs shared */
+.field{margin-bottom:1rem;}
+.field-label{display:block;font-size:11px;font-weight:500;letter-spacing:0.07em;color:#555;margin-bottom:5px;}
+body.dark .field-label{color:#999;}
+.field input[type=text],.field input[type=password],.field select{
+  width:100%;height:40px;padding:0 12px;font-size:13px;
+  border-radius:8px;border:1.5px solid #ccc;
+  background:#f7f7f5;color:#111;outline:none;font-family:'DM Sans',sans-serif;
+  transition:border-color 0.15s;
+}
+.field input:focus,.field select:focus{border-color:#888;}
+body.dark .field input[type=text],body.dark .field input[type=password],body.dark .field select{background:#252523;border-color:#3a3a38;color:#f0f0ee;}
+body.dark .field input:focus,body.dark .field select:focus{border-color:#666;}
+
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:44px;}
+.pw-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#aaa;font-size:16px;padding:4px;}
+.pw-toggle:hover{color:#555;}
+body.dark .pw-toggle{color:#666;}
+body.dark .pw-toggle:hover{color:#aaa;}
+
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:1rem;}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#111;}
+.checkbox-row label{font-size:13px;color:#555;cursor:pointer;}
+body.dark .checkbox-row label{color:#999;}
+body.dark .checkbox-row input[type=checkbox]{accent-color:#f0f0ee;}
+
+/* URL mode */
+.input-row{display:flex;gap:8px;margin-bottom:1.1rem;}
+#url-in{flex:1;font-family:'DM Mono',monospace;font-size:13px;padding:0 12px;height:44px;border-radius:8px;border:1.5px solid #ccc;background:#f7f7f5;color:#111;outline:none;transition:border-color 0.15s;}
+#url-in:focus{border-color:#888;}
+#url-in::placeholder{color:#bbb;}
+body.dark #url-in{background:#252523;border-color:#3a3a38;color:#f0f0ee;}
+body.dark #url-in:focus{border-color:#666;}
+body.dark #url-in::placeholder{color:#555;}
+
+#gen-btn,#wifi-gen-btn{height:44px;padding:0 20px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;background:#111;color:#fff;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:opacity 0.15s;width:100%;margin-top:0.25rem;}
+#gen-btn{width:auto;}
+#gen-btn:hover,#wifi-gen-btn:hover{opacity:0.75;}
+body.dark #gen-btn,body.dark #wifi-gen-btn{background:#f0f0ee;color:#111;}
+
+/* Opts */
+.opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.1rem;}
+.opt-label{display:block;font-size:11px;font-weight:500;letter-spacing:0.07em;color:#555;margin-bottom:5px;}
+body.dark .opt-label{color:#999;}
+.opt select{width:100%;height:36px;padding:0 8px;font-size:12px;border-radius:7px;border:1.5px solid #ccc;background:#f7f7f5;color:#111;outline:none;font-family:'DM Sans',sans-serif;}
+body.dark .opt select{background:#252523;border-color:#3a3a38;color:#f0f0ee;}
+.color-pair{display:flex;gap:6px;align-items:center;}
+.color-label{font-size:11px;color:#999;}
+input[type=color]{width:36px;height:36px;border-radius:7px;border:1.5px solid #ccc;padding:2px;cursor:pointer;background:none;}
+body.dark input[type=color]{border-color:#3a3a38;}
+
+.dot-section{margin-bottom:1.1rem;}
+.dot-styles{display:flex;gap:7px;margin-top:6px;}
+.dot-btn{flex:1;height:36px;font-size:12px;font-weight:500;cursor:pointer;border-radius:7px;border:1.5px solid #ccc;background:#f0f0ee;color:#555;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.dot-btn:hover{border-color:#999;color:#111;}
+.dot-btn.active{background:#111;color:#fff;border-color:#111;}
+body.dark .dot-btn{background:#252523;border-color:#3a3a38;color:#999;}
+body.dark .dot-btn:hover{border-color:#666;color:#e0e0de;}
+body.dark .dot-btn.active{background:#f0f0ee;color:#111;border-color:#f0f0ee;}
+
+/* Divider */
+.divider{border:none;border-top:1.5px solid #e8e8e6;margin:1.1rem 0;}
+body.dark .divider{border-color:#2e2e2c;}
+
+/* QR area */
+.qr-area{border:1.5px dashed #ccc;border-radius:10px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:1.25rem;}
+body.dark .qr-area{border-color:#3a3a38;}
+.placeholder-icon{font-size:36px;line-height:1;}
+#placeholder-url,#placeholder-wifi{font-size:14px;color:#bbb;text-align:center;}
+body.dark #placeholder-url,body.dark #placeholder-wifi{color:#555;}
+#qr-canvas-url,#qr-canvas-wifi{display:none;border-radius:6px;}
+.err{color:#c0392b;font-size:13px;display:none;text-align:center;}
+
+/* Wifi badge */
+.wifi-badge{display:inline-flex;align-items:center;gap:6px;background:#e8f4fd;border:1.5px solid #b8d8f0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;color:#1a6fa0;margin-bottom:1rem;}
+body.dark .wifi-badge{background:#0f2a3d;border-color:#1a4a6a;color:#5ab3e8;}
+
+.actions{display:none;gap:7px;margin-top:0.9rem;}
+.act-btn{flex:1;height:38px;font-size:12px;font-weight:500;cursor:pointer;border-radius:7px;border:1.5px solid #ccc;background:#f7f7f5;color:#333;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+.act-btn:hover{background:#e8e8e6;border-color:#aaa;}
+body.dark .act-btn{background:#252523;border-color:#3a3a38;color:#d0d0ce;}
+body.dark .act-btn:hover{background:#2e2e2c;border-color:#555;}
+
+.section-title{font-size:11px;font-weight:500;letter-spacing:0.07em;color:#888;margin:1.25rem 0 0.6rem;}
+body.dark .section-title{color:#555;}
+.history-list{display:flex;flex-direction:column;gap:7px;max-height:200px;overflow-y:auto;}
+.hist-item{display:flex;align-items:center;gap:10px;background:#f7f7f5;border:1.5px solid #e4e4e2;border-radius:8px;padding:8px 10px;cursor:pointer;transition:background 0.15s;}
+.hist-item:hover{background:#ededed;}
+body.dark .hist-item{background:#222;border-color:#333;}
+body.dark .hist-item:hover{background:#2a2a28;}
+.hist-thumb{width:40px;height:40px;border-radius:4px;flex-shrink:0;}
+.hist-url{font-family:'DM Mono',monospace;font-size:11px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+body.dark .hist-url{color:#e0e0de;}
+.hist-time{font-size:11px;color:#aaa;margin-top:2px;}
+body.dark .hist-time{color:#666;}
+.hist-type{font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;background:#e8f4fd;color:#1a6fa0;margin-left:auto;flex-shrink:0;}
+.hist-type.url-type{background:#f0f0ee;color:#666;}
+body.dark .hist-type{background:#0f2a3d;color:#5ab3e8;}
+body.dark .hist-type.url-type{background:#252523;color:#888;}
+.hist-del{background:none;border:none;color:#bbb;cursor:pointer;font-size:18px;padding:4px;border-radius:4px;line-height:1;margin-left:4px;}
+.hist-del:hover{color:#c0392b;}
+
+.share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;color:#fff;font-size:13px;padding:9px 20px;border-radius:20px;opacity:0;transition:opacity 0.2s;pointer-events:none;z-index:99;white-space:nowrap;}
+body.dark .share-toast{background:#f0f0ee;color:#111;}
+.share-toast.show{opacity:1;}
+.footer{text-align:center;font-size:12px;color:#aaa;margin-top:1.5rem;}
+body.dark .footer{color:#555;}
+</style>
+
+<div class="share-toast" id="toast">Copied!</div>
+
+<div class="topbar">
+  <span class="hero-label">FREE · INSTANT · NO SIGN-UP</span>
+  <button class="dark-toggle" id="dark-toggle">🌙 Dark mode</button>
+</div>
+
+<h1>URL → QR Code</h1>
+<p class="tagline">Generate QR codes for links or Wi-Fi networks instantly.</p>
+
+<div class="card">
+
+  <!-- Mode tabs -->
+  <div class="tabs">
+    <button class="tab active" data-mode="url">🔗 URL / Link</button>
+    <button class="tab" data-mode="wifi">📶 Wi-Fi Network</button>
+  </div>
+
+  <!-- URL MODE -->
+  <div id="mode-url">
+    <div class="input-row">
+      <input id="url-in" type="text" placeholder="https://example.com" autocomplete="off" spellcheck="false" />
+      <button id="gen-btn">Generate</button>
+    </div>
+    <div class="opts">
+      <div class="opt">
+        <span class="opt-label">COLORS</span>
+        <div class="color-pair">
+          <input type="color" id="fg" value="#000000" />
+          <span class="color-label">QR</span>
+          <input type="color" id="bg" value="#ffffff" />
+          <span class="color-label">BG</span>
+        </div>
+      </div>
+      <div class="opt">
+        <span class="opt-label">SIZE</span>
+        <select id="sz">
+          <option value="200">Small — 200px</option>
+          <option value="300" selected>Medium — 300px</option>
+          <option value="400">Large — 400px</option>
+        </select>
+      </div>
+      <div class="opt">
+        <span class="opt-label">ERROR CORRECTION</span>
+        <select id="ec">
+          <option value="L">Low (7%)</option>
+          <option value="M" selected>Medium (15%)</option>
+          <option value="Q">High (25%)</option>
+          <option value="H">Max (30%)</option>
+        </select>
+      </div>
+    </div>
+    <div class="dot-section">
+      <span class="opt-label">DOT STYLE</span>
+      <div class="dot-styles">
+        <button class="dot-btn active" data-style="square">■ Square</button>
+        <button class="dot-btn" data-style="rounded">◼ Rounded</button>
+        <button class="dot-btn" data-style="dots">● Dots</button>
+      </div>
+    </div>
+    <div class="qr-area">
+      <div class="placeholder-icon">🔗</div>
+      <div id="placeholder-url">Paste a URL above and hit Generate</div>
+      <canvas id="qr-canvas-url"></canvas>
+      <div class="err" id="err-url"></div>
+    </div>
+    <div class="actions" id="actions-url">
+      <button class="act-btn" id="dl-url">⬇ Download PNG</button>
+      <button class="act-btn" id="share-url">🔗 Share link</button>
+      <button class="act-btn" id="copy-url">⎘ Copy image</button>
+    </div>
+  </div>
+
+  <!-- WIFI MODE -->
+  <div id="mode-wifi" style="display:none;">
+    <div class="wifi-badge">📶 Wi-Fi QR — scan to connect automatically</div>
+
+    <div class="field">
+      <span class="field-label">NETWORK NAME (SSID)</span>
+      <input type="text" id="wifi-ssid" placeholder="My Home Network" autocomplete="off" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <span class="field-label">SECURITY TYPE</span>
+        <select id="wifi-sec">
+          <option value="WPA">WPA / WPA2 / WPA3</option>
+          <option value="WEP">WEP</option>
+          <option value="nopass">None (open network)</option>
+        </select>
+      </div>
+      <div class="field">
+        <span class="field-label">PASSWORD</span>
+        <div class="pw-wrap">
+          <input type="password" id="wifi-pw" placeholder="Enter password" autocomplete="off" />
+          <button class="pw-toggle" id="pw-toggle" title="Show/hide password">👁</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="wifi-hidden" />
+      <label for="wifi-hidden">Hidden network (SSID not broadcast)</label>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="opts">
+      <div class="opt">
+        <span class="opt-label">COLORS</span>
+        <div class="color-pair">
+          <input type="color" id="wifi-fg" value="#000000" />
+          <span class="color-label">QR</span>
+          <input type="color" id="wifi-bg" value="#ffffff" />
+          <span class="color-label">BG</span>
+        </div>
+      </div>
+      <div class="opt">
+        <span class="opt-label">SIZE</span>
+        <select id="wifi-sz">
+          <option value="200">Small — 200px</option>
+          <option value="300" selected>Medium — 300px</option>
+          <option value="400">Large — 400px</option>
+        </select>
+      </div>
+      <div class="opt">
+        <span class="opt-label">DOT STYLE</span>
+        <select id="wifi-dot">
+          <option value="square">Square</option>
+          <option value="rounded">Rounded</option>
+          <option value="dots">Dots</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="wifi-gen-btn">Generate Wi-Fi QR Code</button>
+
+    <div class="qr-area" style="margin-top:1rem;">
+      <div class="placeholder-icon">📶</div>
+      <div id="placeholder-wifi">Fill in your network details above</div>
+      <canvas id="qr-canvas-wifi"></canvas>
+      <div class="err" id="err-wifi"></div>
+    </div>
+
+    <div class="actions" id="actions-wifi">
+      <button class="act-btn" id="dl-wifi">⬇ Download PNG</button>
+      <button class="act-btn" id="copy-wifi">⎘ Copy image</button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div id="history-section" style="display:none;">
+    <hr class="divider" />
+    <div class="section-title">RECENT QR CODES</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+</div>
+
+<p class="footer">Runs entirely in your browser · Passwords never leave your device</p>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+// --- State ---
+let dotStyle = 'square';
+let qrHistory = [];
+let currentMode = 'url';
+
+// --- Dark mode ---
+document.getElementById('dark-toggle').addEventListener('click', () => {
+  const d = document.body.classList.toggle('dark');
+  document.getElementById('dark-toggle').textContent = d ? '☀️ Light mode' : '🌙 Dark mode';
+});
+
+// --- Tabs ---
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMode = tab.dataset.mode;
+    document.getElementById('mode-url').style.display = currentMode === 'url' ? '' : 'none';
+    document.getElementById('mode-wifi').style.display = currentMode === 'wifi' ? '' : 'none';
+  });
+});
+
+// --- Dot style buttons ---
+document.querySelectorAll('.dot-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dot-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    dotStyle = btn.dataset.style;
+  });
+});
+
+// --- Password toggle ---
+document.getElementById('pw-toggle').addEventListener('click', () => {
+  const pw = document.getElementById('wifi-pw');
+  pw.type = pw.type === 'password' ? 'text' : 'password';
+});
+
+// --- Wifi sec type: hide pw if open ---
+document.getElementById('wifi-sec').addEventListener('change', () => {
+  const open = document.getElementById('wifi-sec').value === 'nopass';
+  document.getElementById('wifi-pw').disabled = open;
+  document.getElementById('wifi-pw').placeholder = open ? 'No password needed' : 'Enter password';
+});
+
+// --- Toast ---
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// --- Dot style renderer ---
+function applyDotStyle(ctx, size, fg, bg, style) {
+  if (style === 'square') return;
+  const imageData = ctx.getImageData(0, 0, size, size);
+  const data = imageData.data;
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, size, size);
+  const ms = size / 33;
+  const r = style === 'dots' ? ms / 2 : ms * 0.35;
+  ctx.fillStyle = fg;
+  for (let y = 0; y < size; y += ms) {
+    for (let x = 0; x < size; x += ms) {
+      const px = Math.floor(x + ms/2), py = Math.floor(y + ms/2);
+      if (px >= size || py >= size) continue;
+      const i = (py * size + px) * 4;
+      if (data[i] < 128) {
+        ctx.beginPath();
+        if (style === 'dots') ctx.arc(x+ms/2, y+ms/2, r, 0, Math.PI*2);
+        else ctx.roundRect(x+1, y+1, ms-2, ms-2, r);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+// --- Escape Wi-Fi special chars ---
+function wifiEscape(str) {
+  return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/:/g,'\\:');
+}
+
+// --- Generate URL QR ---
+async function generateUrl() {
+  const rawUrl = document.getElementById('url-in').value.trim();
+  const errEl = document.getElementById('err-url');
+  errEl.style.display = 'none';
+  if (!rawUrl) { errEl.textContent='Please enter a URL.'; errEl.style.display='block'; return; }
+  let url = rawUrl;
+  if (!url.startsWith('http')) url = 'https://' + url;
+  try { new URL(url); } catch { errEl.textContent='Please enter a valid URL.'; errEl.style.display='block'; return; }
+
+  const canvas = document.getElementById('qr-canvas-url');
+  const size = parseInt(document.getElementById('sz').value);
+  const fg = document.getElementById('fg').value;
+  const bg = document.getElementById('bg').value;
+  const ec = document.getElementById('ec').value;
+
+  try {
+    await QRCode.toCanvas(canvas, url, { width:size, margin:2, errorCorrectionLevel:ec, color:{dark:fg,light:bg} });
+    if (dotStyle !== 'square') applyDotStyle(canvas.getContext('2d'), size, fg, bg, dotStyle);
+    canvas.style.display = 'block';
+    document.getElementById('placeholder-url').style.display = 'none';
+    document.getElementById('actions-url').style.display = 'flex';
+    addHistory(url, canvas.toDataURL('image/png'), 'url');
+  } catch(e) { errEl.textContent='Could not generate QR.'; errEl.style.display='block'; }
+}
+
+// --- Generate Wi-Fi QR ---
+async function generateWifi() {
+  const ssid = document.getElementById('wifi-ssid').value.trim();
+  const sec = document.getElementById('wifi-sec').value;
+  const pw = document.getElementById('wifi-pw').value;
+  const hidden = document.getElementById('wifi-hidden').checked;
+  const errEl = document.getElementById('err-wifi');
+  errEl.style.display = 'none';
+
+  if (!ssid) { errEl.textContent='Please enter a network name (SSID).'; errEl.style.display='block'; return; }
+  if (sec !== 'nopass' && !pw) { errEl.textContent='Please enter the Wi-Fi password.'; errEl.style.display='block'; return; }
+
+  const wifiStr = `WIFI:T:${sec};S:${wifiEscape(ssid)};P:${wifiEscape(pw)};H:${hidden ? 'true':'false'};;`;
+
+  const canvas = document.getElementById('qr-canvas-wifi');
+  const size = parseInt(document.getElementById('wifi-sz').value);
+  const fg = document.getElementById('wifi-fg').value;
+  const bg = document.getElementById('wifi-bg').value;
+  const wDot = document.getElementById('wifi-dot').value;
+
+  try {
+    await QRCode.toCanvas(canvas, wifiStr, { width:size, margin:2, errorCorrectionLevel:'M', color:{dark:fg,light:bg} });
+    if (wDot !== 'square') applyDotStyle(canvas.getContext('2d'), size, fg, bg, wDot);
+    canvas.style.display = 'block';
+    document.getElementById('placeholder-wifi').style.display = 'none';
+    document.getElementById('actions-wifi').style.display = 'flex';
+    addHistory('📶 ' + ssid, canvas.toDataURL('image/png'), 'wifi');
+  } catch(e) { errEl.textContent='Could not generate Wi-Fi QR: ' + e.message; errEl.style.display='block'; }
+}
+
+// --- History ---
+function addHistory(label, thumb, type) {
+  qrHistory = qrHistory.filter(h => h.label !== label);
+  qrHistory.unshift({ label, thumb, type, time: new Date() });
+  if (qrHistory.length > 8) qrHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const section = document.getElementById('history-section');
+  const list = document.getElementById('history-list');
+  if (!qrHistory.length) { section.style.display='none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  qrHistory.forEach((item, i) => {
+    const mins = Math.floor((new Date() - item.time) / 60000);
+    const timeStr = mins === 0 ? 'just now' : mins + 'm ago';
+    const el = document.createElement('div');
+    el.className = 'hist-item';
+    el.innerHTML = `
+      <img class="hist-thumb" src="${item.thumb}" />
+      <div style="flex:1;min-width:0;">
+        <div class="hist-url">${item.label}</div>
+        <div class="hist-time">${timeStr}</div>
+      </div>
+      <span class="hist-type ${item.type === 'url' ? 'url-type' : ''}">${item.type === 'wifi' ? '📶 Wi-Fi' : '🔗 URL'}</span>
+      <button class="hist-del" data-i="${i}">×</button>`;
+    el.querySelector('.hist-del').addEventListener('click', e => { e.stopPropagation(); qrHistory.splice(i,1); renderHistory(); });
+    list.appendChild(el);
+  });
+}
+
+// --- Event listeners ---
+document.getElementById('gen-btn').addEventListener('click', generateUrl);
+document.getElementById('url-in').addEventListener('keydown', e => { if(e.key==='Enter') generateUrl(); });
+document.getElementById('wifi-gen-btn').addEventListener('click', generateWifi);
+
+function dlCanvas(canvasId, filename) {
+  const c = document.getElementById(canvasId);
+  const a = document.createElement('a');
+  a.download = filename; a.href = c.toDataURL('image/png'); a.click();
+}
+function copyCanvas(canvasId) {
+  document.getElementById(canvasId).toBlob(async blob => {
+    try { await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); showToast('Image copied!'); }
+    catch { showToast('Use Download instead.'); }
+  });
+}
+
+document.getElementById('dl-url').addEventListener('click', () => dlCanvas('qr-canvas-url','qrcode-url.png'));
+document.getElementById('copy-url').addEventListener('click', () => copyCanvas('qr-canvas-url'));
+document.getElementById('share-url').addEventListener('click', () => {
+  const url = document.getElementById('url-in').value.trim();
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => showToast('URL copied to clipboard!')).catch(()=>{});
+});
+document.getElementById('dl-wifi').addEventListener('click', () => dlCanvas('qr-canvas-wifi','qrcode-wifi.png'));
+document.getElementById('copy-wifi').addEventListener('click', () => copyCanvas('qr-canvas-wifi'));
+</script>
